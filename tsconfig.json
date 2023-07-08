@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/RecoilRootWrapper.ts", "components/level-layout/LevelBackgroundTilesLayer.jsx", "components/level-layout/LevelPlacementsLayer.jsx", "components/level-layout/MapCell.jsx", "components/level-layout/RenderLevel.jsx", "game-objects/CelebrationPlacement.jsx", "game-objects/FlourPlacement.jsx", "game-objects/GoalPlacement.jsx", "game-objects/HeroPlacement.jsx", "game-objects/LockPlacements.jsx", "game-objects/WallPlacement.jsx", "game-objects/Placement.jsx", "game-objects/KeyPlacements.jsx", "classes/Inventory.js", "classes/GameLoop.js", "classes/DirectionControls.js", "classes/Collision.js", "components/hud/LevelCompleteMessage.jsx", "components/hud/FlourCount.jsx", "classes/PlacementFactory.js", "classes/LevelState.js"],
   "exclude": ["node_modules"]
 }
