@@ -1,4 +1,4 @@
-import { DIRECTION_RIGHT, CELL_SIZE, DIRECTION_LEFT, DIRECTION_UP, Direction, InventoryItem } from "../helpers/consts";
+import { DIRECTION_RIGHT, CELL_SIZE, DIRECTION_LEFT, DIRECTION_UP, Direction, InventoryItem, BODY_SKINS } from "../helpers/consts";
 
 export class Placement {
     constructor(properties, level) {
@@ -7,6 +7,7 @@ export class Placement {
         this.y = properties.y;
         this.level = level;
 
+        this.skin = BODY_SKINS.NORMAL;
         this.travelPixelsPerFrame = 1.5;
         this.movingPixelsRemaining = 0;
         this.movingPixelDirection = DIRECTION_RIGHT;
@@ -25,6 +26,14 @@ export class Placement {
     addsItemToInventoryOnCollide() {
         return null;
     }
+
+    changesHeroSkinOnCollide() {
+        return null;
+    }
+
+    damagesBodyOnCollide(_body) {
+        return null;
+    }   
 
     completesLevelOnCollide() {
         return false;
@@ -59,6 +68,10 @@ export class Placement {
     collect() {
         this.hasBeenCollected = true;
         this.level.inventory.add(this.addsItemToInventoryOnCollide());
+    }
+
+    canBeUnlocked() {
+        return false;
     }
 
     zIndex() {

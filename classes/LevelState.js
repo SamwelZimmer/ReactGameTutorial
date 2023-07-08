@@ -23,6 +23,7 @@ export class LevelState {
 
   start() {
     this.isCompleted = false;
+    this.deathOutcome = null;
 
     const levelData = Levels[this.id];
 
@@ -85,6 +86,11 @@ export class LevelState {
     );
   };
 
+  setDeathOutcome(causeOfDeath) {
+    this.deathOutcome = causeOfDeath;
+    this.gameLoop.stop();
+  }
+
   completeLevel() {
     this.isCompleted = true;
     this.gameLoop?.stop();
@@ -96,6 +102,7 @@ export class LevelState {
       tilesWidth: this.tilesWidth,
       tilesHeight: this.tilesHeight,
       placements: this.placements,
+      deathOutcome: this.deathOutcome,
       isCompleted: this.isCompleted,
     };
   }

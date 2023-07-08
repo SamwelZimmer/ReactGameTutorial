@@ -27,11 +27,29 @@ export class Collision {
         return this.placementsAtPosition.find((p) => {
             return !p.hasBeenCollected && p.addsItemToInventoryOnCollide(this.forBody);
         });
-    }
+    };
 
     withCompletesLevel() {
         return this.placementsAtPosition.find((p) => {
             return p.completesLevelOnCollide();
         })
-    }
+    };
+
+    withLock() {
+        return this.placementsAtPosition.find((p) => {
+            return p.canBeUnlocked();
+        })
+    };
+
+    withSelfGetsDamaged() {
+        return this.placementsAtPosition.find((p) => {
+            return p.damagesBodyOnCollide(this.forBody);
+        });
+    };
+
+    withChangesHeroSkin() {
+        return this.placementsAtPosition.find((p) => {
+            return p.changesHeroSkinOnCollide();
+        });
+    };
 }

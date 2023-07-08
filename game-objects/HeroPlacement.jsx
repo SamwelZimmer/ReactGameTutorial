@@ -2,11 +2,12 @@ import { Placement } from "./Placement";
 import Hero from "../components/object-graphics/Hero";
 import { DIRECTION_LEFT, DIRECTION_RIGHT, directionUpdateMap, BODY_SKINS, HERO_RUN_1, HERO_RUN_2, Z_INDEX_LAYER_SIZE, PLACEMENT_TYPE_CELEBRATION } from "../helpers/consts";
 import { TILES } from "../helpers/tiles";
-import { Direction } from "../helpers/consts";
 import { Collision } from "../classes/Collision";
 
 const heroSkinMap = {
     [BODY_SKINS.NORMAL]: [TILES.HERO_LEFT, TILES.HERO_RIGHT],
+    [BODY_SKINS.DEATH]: [TILES.HERO_DEATH_LEFT, TILES.HERO_DEATH_RIGHT],
+    [BODY_SKINS.WATER]: [TILES.HERO_WATER_LEFT, TILES.HERO_WATER_RIGHT],
     [HERO_RUN_1]: [TILES.HERO_RUN_1_LEFT, TILES.HERO_RUN_1_RIGHT],
     [HERO_RUN_2]: [TILES.HERO_RUN_2_LEFT, TILES.HERO_RUN_2_RIGHT],
 };
@@ -20,10 +21,22 @@ export class HeroPlacement extends Placement {
             return;
         }
 
-        // make sure next space is valid
-        const canMove = this.canMoveToNextDestination(direction);
-        if (!canMove) {
+        // check for lock at next position
+        const possibleLock = this.getLockAtNextPosition(direction);
+        if (possibleLock) {
+            possibleLock.unlock();
             return;
+        }
+
+        // make sure next space is valid
+        if (this.isSolidAtNextPosition(direction)) {
+            return;
+        }
+
+        // maybe hop out of non-normal skin
+        const collision = this.getCollisionAtNextPosition(direction);
+        if (!collision.withChangesHeroSkin()) {
+            this.skin = BODY_SKINS.NORMAL;
         }
 
         // start moving
@@ -33,23 +46,27 @@ export class HeroPlacement extends Placement {
         this.updateWalkFrame();
     }
 
-    canMoveToNextDestination(direction) {
-        // is next space in bounds
+    getCollisionAtNextPosition(direction) {
         const { x, y } = directionUpdateMap[direction];
         const nextX = this.x + x;
         const nextY = this.y + y;
-        const isOutOfBounds = this.level.isPositionOutOfBounds(nextX, nextY);
+        return new Collision(this, this.level, { x: nextX, y: nextY });
+    }
+
+    getLockAtNextPosition(direction) {
+        const collision = this.getCollisionAtNextPosition(direction);
+        return collision.withLock();
+    }
+
+    isSolidAtNextPosition(direction) {
+        const collision = this.getCollisionAtNextPosition(direction);
+
+        const isOutOfBounds = this.level.isPositionOutOfBounds(collision.x, collision.y);
         if (isOutOfBounds) {
-            return false;
+            return true;
         };
 
-        // is there somthing solid there
-        const collision = new Collision(this, this.level, { x: nextX, y: nextY })
-        if (collision.withSolidPlacement()) {
-            return false
-        }
-
-        return true;
+        return Boolean(collision.withSolidPlacement());
     };
 
     updateFaceingDirection() {
@@ -89,11 +106,24 @@ export class HeroPlacement extends Placement {
 
     handleCollisions() {
         const collision = new Collision(this, this.level);
+
+        // assume that we want to return to the standard skin at each position
+        this.skin = BODY_SKINS.NORMAL;
+        const changesHeroSkin = collision.withChangesHeroSkin();
+        if (changesHeroSkin) {
+            this.skin = changesHeroSkin.changesHeroSkinOnCollide();
+        };
+
         const collideThatAddsToInventory = collision.withPlacementAddsToInventory();
         if (collideThatAddsToInventory) {
             collideThatAddsToInventory.collect();
             this.level.addPlacement({ type: PLACEMENT_TYPE_CELEBRATION, x: this.x, y: this.y });
         };
+
+        const takesDamage = collision.withSelfGetsDamaged();
+        if (takesDamage) {
+            this.level.setDeathOutcome(takesDamage.type);
+        }
 
         const completesLevel = collision.withCompletesLevel();
         if (completesLevel) {
@@ -105,18 +135,23 @@ export class HeroPlacement extends Placement {
         // which to side of sprite to show
         const index = this.spriteFacingDirection === DIRECTION_LEFT ? 0 : 1;
 
-        // use correct walking frame for given direction
-        if (this.movingPixelsRemaining > 0) {
+        // if dead show death skin
+        if (this.level.deathOutcome) {
+            return heroSkinMap[BODY_SKINS.DEATH][index];
+        }
+
+        // use correct walking frame for given direction if using standard skin
+        if (this.movingPixelsRemaining > 0 && this.skin === BODY_SKINS.NORMAL) {
             const walkKey = this.spriteWalkFrame === 0 ? HERO_RUN_1 : HERO_RUN_2;
             return heroSkinMap[walkKey][index];
         }
 
-        return heroSkinMap[BODY_SKINS.NORMAL][index];
+        return heroSkinMap[this.skin][index];
     }
 
     getYTranslate() {
-        // stand on ground when not moving
-        if (this.movingPixelsRemaining === 0) {
+        // stand on ground when not moving and don't jump when in water
+        if (this.movingPixelsRemaining === 0 || this.skin !== BODY_SKINS.NORMAL) {
             return 0;
         }
         
@@ -135,6 +170,7 @@ export class HeroPlacement extends Placement {
     }
 
     renderComponent() {
-        return <Hero frameCoord={this.getFrame()} yTranslate={this.getYTranslate()} />;
+        const showShadow = this.skin != BODY_SKINS.WATER;
+        return <Hero frameCoord={this.getFrame()} yTranslate={this.getYTranslate()} showShadow={showShadow} />;
     };
 };
