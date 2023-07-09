@@ -9,6 +9,7 @@ export class FlyingEnemyPlacement extends GroundEnemyPlacement {
         this.tickBetweenMovesInterval = 20; // hpw many frame to wait between moves
         this.ticksUntilNextMove = this.tickBetweenMovesInterval;  // counts how many frames left
         this.turnsAroundAtWater = false;  // flying enemies can cross water
+        this.allowsAutoMovement = false;  // doesn't get moved by conveyors etc.
     }
 
     renderComponent() {

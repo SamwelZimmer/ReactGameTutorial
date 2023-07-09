@@ -10,7 +10,10 @@ import { WaterPickupPlacement } from "../game-objects/WaterPickupPlacement";
 import { GroundEnemyPlacement } from "../game-objects/GroundEnemyPlacement";
 import { FlyingEnemyPlacement } from "../game-objects/FlyingEnemyPlacement";
 import { RoamingEnemyPlacement } from "../game-objects/RoamingEnemyPlacement";
-import { PLACEMENT_TYPE_CELEBRATION, PLACEMENT_TYPE_FLOUR, PLACEMENT_TYPE_GOAL, PLACEMENT_TYPE_HERO, PLACEMENT_TYPE_WALL, PLACEMENT_TYPE_KEY, PLACEMENT_TYPE_LOCK, PLACEMENT_TYPE_WATER, PLACEMENT_TYPE_WATER_PICKUP, PLACEMENT_TYPE_GROUND_ENEMY, PLACEMENT_TYPE_FLYING_ENEMY, PLACEMENT_TYPE_ROAMING_ENEMY } from "../helpers/consts";
+import { ConveyorPlacement } from "../game-objects/conveyorPlacement";
+import { IcePlacement } from "../game-objects/IcePlacement";
+import { IcePickupPlacement } from "../game-objects/IcePickupPlacement";
+import { PLACEMENT_TYPE_CELEBRATION, PLACEMENT_TYPE_FLOUR, PLACEMENT_TYPE_GOAL, PLACEMENT_TYPE_HERO, PLACEMENT_TYPE_WALL, PLACEMENT_TYPE_KEY, PLACEMENT_TYPE_LOCK, PLACEMENT_TYPE_WATER, PLACEMENT_TYPE_WATER_PICKUP, PLACEMENT_TYPE_GROUND_ENEMY, PLACEMENT_TYPE_FLYING_ENEMY, PLACEMENT_TYPE_ROAMING_ENEMY, PLACEMENT_TYPE_CONVEYOR, PLACEMENT_TYPE_ICE, PLACEMENT_TYPE_ICE_PICKUP } from "../helpers/consts";
 
 const placementTypeClassMap = {
     [PLACEMENT_TYPE_HERO]: HeroPlacement,
@@ -24,7 +27,10 @@ const placementTypeClassMap = {
     [PLACEMENT_TYPE_WATER_PICKUP]: WaterPickupPlacement,
     [PLACEMENT_TYPE_GROUND_ENEMY]: GroundEnemyPlacement,
     [PLACEMENT_TYPE_FLYING_ENEMY]: FlyingEnemyPlacement,
-    [PLACEMENT_TYPE_ROAMING_ENEMY]: RoamingEnemyPlacement
+    [PLACEMENT_TYPE_ROAMING_ENEMY]: RoamingEnemyPlacement,
+    [PLACEMENT_TYPE_CONVEYOR]: ConveyorPlacement,
+    [PLACEMENT_TYPE_ICE]: IcePlacement,
+    [PLACEMENT_TYPE_ICE_PICKUP]: IcePickupPlacement,
 };
 
 class PlacementFactory {

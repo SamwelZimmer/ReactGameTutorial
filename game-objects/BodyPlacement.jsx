@@ -17,6 +17,13 @@ export class BodyPlacement extends Placement {
     }
 
     isSolidAtNextPosition(direction) {
+
+        // check for ice corner
+        const onIceCorner = new Collision(this, this.level).withIceCorner();
+        if (onIceCorner?.blocksMovementDirection(direction)) {
+            return true;
+        }
+
         const collision = this.getCollisionAtNextPosition(direction);
 
         const isOutOfBounds = this.level.isPositionOutOfBounds(collision.x, collision.y);
@@ -62,11 +69,15 @@ export class BodyPlacement extends Placement {
         this.y += y;
         this.handleCollisions();
         this.onPostMove();
-    }
+    };
 
     onPostMove() {
         return null;
     };
+
+    onAutoMovement(_direction) {
+        return null;
+    }
 
     handleCollisions() {
         const collision = new Collision(this, this.level);
@@ -82,6 +93,11 @@ export class BodyPlacement extends Placement {
         if (collideThatAddsToInventory) {
             collideThatAddsToInventory.collect();
             this.level.addPlacement({ type: PLACEMENT_TYPE_CELEBRATION, x: this.x, y: this.y });
+        };
+
+        const autoMovePlacement = collision.withPlacementMovesBody();
+        if (autoMovePlacement) {
+            this.onAutoMovement(autoMovePlacement.autoMovesBodyOnCollide(this));
         };
 
         const takesDamage = collision.withSelfGetsDamaged();
