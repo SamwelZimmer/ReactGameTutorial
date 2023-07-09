@@ -19,6 +19,10 @@ export class Placement {
 
     tick() {};
 
+    tickAttemptAiMove() {
+        return null;
+    }
+
     isSolidForBody(_body) {
         return false;
     }

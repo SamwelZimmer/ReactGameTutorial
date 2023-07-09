@@ -9,6 +9,11 @@ export class WaterPlacement extends Placement {
         return BODY_SKINS.WATER;
     }
 
+    isSolidForBody(body) {
+        // means that walking enemies treat water like a solid wall
+        return body.turnsAroundAtWater ?? false;
+    }
+
     damagesBodyOnCollide(body) {
         const { inventory } = this.level;
         return body.type === PLACEMENT_TYPE_HERO && !inventory.has(PLACEMENT_TYPE_WATER_PICKUP)

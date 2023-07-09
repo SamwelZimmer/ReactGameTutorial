@@ -2,13 +2,13 @@ import { TILES } from "../../helpers/tiles";
 import Sprite from "./Sprite";
 import styles from "./Hero.module.css";
 
-interface HeroProps {
+interface BodyProps {
     frameCoord: string;
     yTranslate: number;
     showShadow: boolean;
 }
 
-export default function Hero({ frameCoord, yTranslate, showShadow }: HeroProps) {
+export default function Body({ frameCoord, yTranslate, showShadow }: BodyProps) {
     return (
         <div className={styles.hero}>
             <div>

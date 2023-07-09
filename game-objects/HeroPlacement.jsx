@@ -1,8 +1,7 @@
-import { Placement } from "./Placement";
-import Hero from "../components/object-graphics/Hero";
-import { DIRECTION_LEFT, DIRECTION_RIGHT, directionUpdateMap, BODY_SKINS, HERO_RUN_1, HERO_RUN_2, Z_INDEX_LAYER_SIZE, PLACEMENT_TYPE_CELEBRATION } from "../helpers/consts";
+import { BodyPlacement } from "./BodyPlacement";
+import Body from "../components/object-graphics/Body";
+import { DIRECTION_LEFT, BODY_SKINS, HERO_RUN_1, HERO_RUN_2, Z_INDEX_LAYER_SIZE } from "../helpers/consts";
 import { TILES } from "../helpers/tiles";
-import { Collision } from "../classes/Collision";
 
 const heroSkinMap = {
     [BODY_SKINS.NORMAL]: [TILES.HERO_LEFT, TILES.HERO_RIGHT],
@@ -12,10 +11,14 @@ const heroSkinMap = {
     [HERO_RUN_2]: [TILES.HERO_RUN_2_LEFT, TILES.HERO_RUN_2_RIGHT],
 };
  
-export class HeroPlacement extends Placement {
+export class HeroPlacement extends BodyPlacement {
+    constructor(properties, level) {
+      super(properties, level);
+      this.canCollectItems = true;
+      this.canCompleteLevel = true;
+    }
 
     controllerMoveRequested(direction) {
-
         // attempt to move
         if (this.movingPixelsRemaining > 0) {
             return;
@@ -46,90 +49,9 @@ export class HeroPlacement extends Placement {
         this.updateWalkFrame();
     }
 
-    getCollisionAtNextPosition(direction) {
-        const { x, y } = directionUpdateMap[direction];
-        const nextX = this.x + x;
-        const nextY = this.y + y;
-        return new Collision(this, this.level, { x: nextX, y: nextY });
+    zIndex() {
+        return this.y * Z_INDEX_LAYER_SIZE + 1;
     }
-
-    getLockAtNextPosition(direction) {
-        const collision = this.getCollisionAtNextPosition(direction);
-        return collision.withLock();
-    }
-
-    isSolidAtNextPosition(direction) {
-        const collision = this.getCollisionAtNextPosition(direction);
-
-        const isOutOfBounds = this.level.isPositionOutOfBounds(collision.x, collision.y);
-        if (isOutOfBounds) {
-            return true;
-        };
-
-        return Boolean(collision.withSolidPlacement());
-    };
-
-    updateFaceingDirection() {
-        if (this.movingPixelDirection === DIRECTION_LEFT || this.movingPixelDirection === DIRECTION_RIGHT) {
-            this.spriteFacingDirection = this.movingPixelDirection;
-        }
-    }
-
-    updateWalkFrame() {
-        this.spriteWalkFrame = this.spriteWalkFrame === 1 ? 0 : 1;
-    }
-
-    tick() {
-        this.tickMovingPixelProgress();
-    };
-
-    tickMovingPixelProgress() {
-
-        if (this.movingPixelsRemaining === 0) {
-            return;
-        };
-
-        this.movingPixelsRemaining -= this.travelPixelsPerFrame;
-        if (this.movingPixelsRemaining <= 0) {
-            this.movingPixelsRemaining = 0;
-            this.onDoneMoving();
-        };
-    };
-
-    onDoneMoving() {
-        // update the hero's x / y position
-        const {x, y} = directionUpdateMap[this.movingPixelDirection];
-        this.x += x;
-        this.y += y;
-        this.handleCollisions();
-    }
-
-    handleCollisions() {
-        const collision = new Collision(this, this.level);
-
-        // assume that we want to return to the standard skin at each position
-        this.skin = BODY_SKINS.NORMAL;
-        const changesHeroSkin = collision.withChangesHeroSkin();
-        if (changesHeroSkin) {
-            this.skin = changesHeroSkin.changesHeroSkinOnCollide();
-        };
-
-        const collideThatAddsToInventory = collision.withPlacementAddsToInventory();
-        if (collideThatAddsToInventory) {
-            collideThatAddsToInventory.collect();
-            this.level.addPlacement({ type: PLACEMENT_TYPE_CELEBRATION, x: this.x, y: this.y });
-        };
-
-        const takesDamage = collision.withSelfGetsDamaged();
-        if (takesDamage) {
-            this.level.setDeathOutcome(takesDamage.type);
-        }
-
-        const completesLevel = collision.withCompletesLevel();
-        if (completesLevel) {
-            this.level.completeLevel();
-        }
-    };
 
     getFrame() {
         // which to side of sprite to show
@@ -149,28 +71,8 @@ export class HeroPlacement extends Placement {
         return heroSkinMap[this.skin][index];
     }
 
-    getYTranslate() {
-        // stand on ground when not moving and don't jump when in water
-        if (this.movingPixelsRemaining === 0 || this.skin !== BODY_SKINS.NORMAL) {
-            return 0;
-        }
-        
-        // elevate ramp up or down at beginning/end of movement
-        const PIXELS_FROM_END = 2;
-        if (this.movingPixelsRemaining < PIXELS_FROM_END || this.movingPixelsRemaining > 16 - PIXELS_FROM_END) {
-            return -1;
-        }
-        
-        // highest in the middle of the movement
-        return -2;
-    }
-    
-    zIndex() {
-        return this.y * Z_INDEX_LAYER_SIZE + 1;
-    }
-
     renderComponent() {
         const showShadow = this.skin != BODY_SKINS.WATER;
-        return <Hero frameCoord={this.getFrame()} yTranslate={this.getYTranslate()} showShadow={showShadow} />;
+        return <Body frameCoord={this.getFrame()} yTranslate={this.getYTranslate()} showShadow={showShadow} />;
     };
 };
