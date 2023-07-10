@@ -20,6 +20,9 @@ export class WaterPlacement extends Placement {
     }
 
     renderComponent() {
-        return <Sprite frameCoord={TILES.WATER1} />;
+
+        const waterFrame = this.level.animatedFrames.waterFrame;
+
+        return <Sprite frameCoord={waterFrame} />;
     };
 };

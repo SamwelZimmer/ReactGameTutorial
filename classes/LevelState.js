@@ -2,6 +2,7 @@ import { PLACEMENT_TYPE_HERO } from "../helpers/consts";
 import { GameLoop } from "./GameLoop";
 import { placementFactory } from "./PlacementFactory";
 import { DirectionControls } from "./DirectionControls";
+import { LevelAnimatedFrames } from "./LevelAnimatedFrames";
 import { Inventory } from "./Inventory";
 import Levels from "../levels/LevelsMap";
    
@@ -36,6 +37,9 @@ export class LevelState {
 
     // create fresh inventory
     this.inventory = new Inventory();
+
+    // create a frame animation manager
+    this.animatedFrames = new LevelAnimatedFrames();
 
     // cache reference to the hero
     this.heroRef = this.placements.find((p) => p?.type === PLACEMENT_TYPE_HERO);
@@ -72,6 +76,9 @@ export class LevelState {
               placement.tick();
           }
       });
+
+      // work on animation frames
+      this.animatedFrames.tick();
 
       // exit any changes to React
       this.onEmit(this.getState());
