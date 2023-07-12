@@ -5,6 +5,7 @@ import { DirectionControls } from "./DirectionControls";
 import { LevelAnimatedFrames } from "./LevelAnimatedFrames";
 import { Camera } from "./Camera";
 import { Inventory } from "./Inventory";
+import { Clock } from "./Clock";
 import Levels from "../levels/LevelsMap";
    
 export class LevelState {
@@ -48,6 +49,9 @@ export class LevelState {
     // create camers
     this.camera = new Camera(this);
 
+    // create clock
+    this.clock = new Clock(20, this);
+
     this.startGameLoop();
   }
 
@@ -86,6 +90,9 @@ export class LevelState {
 
       // update camera
       this.camera.tick();
+
+      // update clock time
+      this.clock.tick();
 
       // exit any changes to React
       this.onEmit(this.getState());
@@ -135,6 +142,9 @@ export class LevelState {
       isCompleted: this.isCompleted,
       cameraTransformX: this.camera.transformX,
       cameraTransformY: this.camera.transformY,
+      secondsRemaining: this.clock.secondsRemaining,
+      inventory: this.inventory,
+      restart: () => { this.start() }
     };
   }
 

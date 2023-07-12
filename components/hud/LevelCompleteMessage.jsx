@@ -1,6 +1,9 @@
 import { useRecoilState } from "recoil";
 import { currentLevelIdAtom } from "../../atoms/currentLevelIdAtom";
 import Levels from "../../levels/LevelsMap";
+import styles from "./PopupMessage.module.css";
+import LevelCompleteSvg from "../object-graphics/LevelCompletedSvg";
+import { useKeyPress } from "../../hooks/useKeyPress";
 
 export default function LevelCompleteMessage() {
   const [currentLevelId, setCurrentLevelId] = useRecoilState(currentLevelIdAtom);
@@ -15,12 +18,17 @@ export default function LevelCompleteMessage() {
     setCurrentLevelId(nextLevelId);
   }
 
+  useKeyPress("Enter", () => {
+    handleClick();
+  });
+
   return (
-    <p style={{ position: "absolute", left: 0, top: 64, color: "lime" }}>
-      LEVEL COMPLETE!
-      <button onClick={handleClick}>
-        Next Level
-      </button>
-    </p>
+    <div className={styles.outerContainer}>
+      <div className={styles.popupContainer}>
+        <button className={styles.quietButton} onClick={handleClick}>
+          <LevelCompleteSvg />
+        </button>
+      </div>
+    </div>
   );
 }
