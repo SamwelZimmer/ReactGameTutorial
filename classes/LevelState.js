@@ -3,6 +3,7 @@ import { GameLoop } from "./GameLoop";
 import { placementFactory } from "./PlacementFactory";
 import { DirectionControls } from "./DirectionControls";
 import { LevelAnimatedFrames } from "./LevelAnimatedFrames";
+import { Camera } from "./Camera";
 import { Inventory } from "./Inventory";
 import Levels from "../levels/LevelsMap";
    
@@ -44,6 +45,9 @@ export class LevelState {
     // cache reference to the hero
     this.heroRef = this.placements.find((p) => p?.type === PLACEMENT_TYPE_HERO);
 
+    // create camers
+    this.camera = new Camera(this);
+
     this.startGameLoop();
   }
 
@@ -79,6 +83,9 @@ export class LevelState {
 
       // work on animation frames
       this.animatedFrames.tick();
+
+      // update camera
+      this.camera.tick();
 
       // exit any changes to React
       this.onEmit(this.getState());
@@ -126,6 +133,8 @@ export class LevelState {
       placements: this.placements,
       deathOutcome: this.deathOutcome,
       isCompleted: this.isCompleted,
+      cameraTransformX: this.camera.transformX,
+      cameraTransformY: this.camera.transformY,
     };
   }
 
