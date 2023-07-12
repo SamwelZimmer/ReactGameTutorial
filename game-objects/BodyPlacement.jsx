@@ -88,23 +88,45 @@ export class BodyPlacement extends Placement {
         if (changesHeroSkin) {
             this.skin = changesHeroSkin.changesHeroSkinOnCollide();
         };
-
+        
+        // adding to inventory
         const collideThatAddsToInventory = collision.withPlacementAddsToInventory();
         if (collideThatAddsToInventory) {
             collideThatAddsToInventory.collect();
             this.level.addPlacement({ type: PLACEMENT_TYPE_CELEBRATION, x: this.x, y: this.y });
         };
 
+        // automoving (ice, conveyors, etc)
         const autoMovePlacement = collision.withPlacementMovesBody();
         if (autoMovePlacement) {
             this.onAutoMovement(autoMovePlacement.autoMovesBodyOnCollide(this));
         };
+        
+        // purple switches
+        if (collision.withDoorSwitch()) {
+            this.level.switchAllDoors();
+        };
 
+        // reset inventory
+        if (collision.withStealsInventory()) {
+            this.level.stealInventory();
+        }
+
+        // teleports
+        const teleport = collision.withTeleport();
+        if (teleport) {
+            const pos = teleport.teleportsToPositionOnCollide(this);
+            this.x = pos.x;
+            this.y = pos.y;
+        }
+        
+        // damage and death
         const takesDamage = collision.withSelfGetsDamaged();
         if (takesDamage) {
             this.level.setDeathOutcome(takesDamage.type);
         }
 
+        // finishing the level
         const completesLevel = collision.withCompletesLevel();
         if (completesLevel) {
             this.level.completeLevel();

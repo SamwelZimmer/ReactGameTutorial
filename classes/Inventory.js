@@ -1,11 +1,11 @@
 export class Inventory {
     constructor() {
         this.inventoryMap = new Map();
-    }
+    };
 
     has(key) {
         return Boolean(this.inventoryMap.has(key));
-    }
+    };
 
     add(key) {
         if (!key) {
@@ -14,5 +14,9 @@ export class Inventory {
         }
         this.inventoryMap.set(key, true);
         console.log(this.inventoryMap)
-    }
+    };
+
+    clear() {
+        this.inventoryMap = new Map();
+    };
 }

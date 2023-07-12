@@ -15,37 +15,50 @@ export class Placement {
         this.spriteWalkFrame = 0;
 
         this.hasBeenCollected = false;
+        this.canBeStolen = true;
     }
 
     tick() {};
 
     tickAttemptAiMove() {
         return null;
-    }
+    };
 
     isSolidForBody(_body) {
         return false;
-    }
+    };
+
+    teleportsToPositionOnCollide() {
+        return null;
+    };
 
     addsItemToInventoryOnCollide() {
         return null;
-    }
+    };
 
     autoMovesBodyOnCollide() {
         return false;
-    }
+    };
 
     changesHeroSkinOnCollide() {
         return null;
-    }
+    };
 
     damagesBodyOnCollide(_body) {
         return null;
-    }   
+    };
 
     completesLevelOnCollide() {
         return false;
     };
+
+    switchesDoorsOnCollide() {
+        return null;
+    };
+
+    stealsInventoryOnCollide() {
+        return null;
+    }
 
     displayXY() {
         if (this.movingPixelsRemaining > 0) {
@@ -76,11 +89,17 @@ export class Placement {
     collect() {
         this.hasBeenCollected = true;
         this.level.inventory.add(this.addsItemToInventoryOnCollide());
-    }
+    };
+
+    resetHasBeenCollected() {
+        if (this.canBeStolen && this.hasBeenCollected) {
+            this.hasBeenCollected = false;
+        };
+    };
 
     canBeUnlocked() {
         return false;
-    }
+    };
 
     zIndex() {
         return 1;
