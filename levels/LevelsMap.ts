@@ -1,9 +1,15 @@
-import DemoLevel1 from "./DemoLevel1";
-import DemoLevel2 from "./DemoLevel2";
+import FlourIntro from "./FlourIntro";
+import IceAndFireIntro from "./IceAndFireIntro";
+import IceIntro from "./IceIntro";
+import ConveyorsIntro from "./ConveyorsIntro";
+import TeleportIntro from "./TeleportIntro";
 
 const Levels = {
-  DemoLevel1: DemoLevel1,
-  DemoLevel2: DemoLevel2,
+  DemoLevel1: FlourIntro,
+  DemoLevel2: IceAndFireIntro,
+  IceIntro: IceIntro,
+  ConveyorsIntro: ConveyorsIntro,
+  TeleportIntro: TeleportIntro,
 };
 
 export default Levels;
