@@ -50,16 +50,16 @@ export class LevelState {
     this.camera = new Camera(this);
 
     // create clock
-    this.clock = new Clock(20, this);
+    this.clock = new Clock(90, this);
 
     this.startGameLoop();
   }
 
   startGameLoop() {
-      this.gameLoop?.stop();
-      this.gameLoop = new GameLoop(() => {
-          this.tick();
-      })
+    this.gameLoop?.stop();
+    this.gameLoop = new GameLoop(() => {
+        this.tick();
+    });
   }
 
   addPlacement(config) {

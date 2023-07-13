@@ -59,11 +59,15 @@ export class HeroPlacement extends BodyPlacement {
 
     onAutoMovement(direction) {
         this.controllerMoveRequested(direction);
-    }
+    };
+
+    takesDamage(deathType) {
+        this.level.setDeathOutcome(deathType);
+    };
 
     zIndex() {
         return this.y * Z_INDEX_LAYER_SIZE + 1;
-    }
+    };
 
     getFrame() {
         // which to side of sprite to show

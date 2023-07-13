@@ -2,7 +2,7 @@ import styles from "./PopupMessage.module.css";
 import LevelFailedSvg from "../object-graphics/LevelFailedSvg";
 import Sprite from "../object-graphics/Sprite";
 import { TILES } from "../../helpers/tiles";
-import { DEATH_TYPE_CLOCK, PLACEMENT_TYPE_GROUND_ENEMY, PLACEMENT_TYPE_FIRE, PLACEMENT_TYPE_FLYING_ENEMY, PLACEMENT_TYPE_ROAMING_ENEMY, PLACEMENT_TYPE_WATER } from "../../helpers/consts";
+import { DEATH_TYPE_CLOCK, PLACEMENT_TYPE_GROUND_ENEMY, PLACEMENT_TYPE_FIRE, PLACEMENT_TYPE_FLYING_ENEMY, PLACEMENT_TYPE_ROAMING_ENEMY, PLACEMENT_TYPE_WATER, PLACEMENT_TYPE_CIABATTA } from "../../helpers/consts";
 import { useKeyPress } from "../../hooks/useKeyPress";
 
 const showDeathType = (deathType) => {
@@ -41,6 +41,16 @@ const showDeathType = (deathType) => {
             }}
           >
             <Sprite frameCoord={TILES.ENEMY_FLYING_RIGHT} size={32} />
+          </div>
+        );
+      case PLACEMENT_TYPE_CIABATTA:
+        return (
+          <div
+            style={{
+              paddingBottom: 12,
+            }}
+          >
+            <Sprite frameCoord={TILES.CIABATTA1} size={48} />
           </div>
         );
       default:

@@ -113,4 +113,6 @@ export const TILES = {
     CIABATTA_PAIN: "11x4",
     CIABATTA_DEAD: "14x4",
     CIABATTA_BLAST: "6x3",
+    CIABATTA_RIGHT: "17x4",
+    CIABATTA_TELEPORT: "20x4",
 };

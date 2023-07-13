@@ -1,6 +1,7 @@
 import { Placement } from "./Placement";
 import { DIRECTION_LEFT, DIRECTION_RIGHT, directionUpdateMap, BODY_SKINS, PLACEMENT_TYPE_CELEBRATION, Z_INDEX_LAYER_SIZE } from "../helpers/consts";
 import { Collision } from "../classes/Collision";
+import soundsManager, { SFX } from "../classes/Sounds";
 
 export class BodyPlacement extends Placement {
 
@@ -94,6 +95,7 @@ export class BodyPlacement extends Placement {
         if (collideThatAddsToInventory) {
             collideThatAddsToInventory.collect();
             this.level.addPlacement({ type: PLACEMENT_TYPE_CELEBRATION, x: this.x, y: this.y });
+            soundsManager.playSfx(SFX.COLLECT);
         };
 
         // automoving (ice, conveyors, etc)
@@ -118,20 +120,26 @@ export class BodyPlacement extends Placement {
             const pos = teleport.teleportsToPositionOnCollide(this);
             this.x = pos.x;
             this.y = pos.y;
+            soundsManager.playSfx(SFX.TELEPORT);
         }
         
         // damage and death
         const takesDamage = collision.withSelfGetsDamaged();
         if (takesDamage) {
-            this.level.setDeathOutcome(takesDamage.type);
+            this.takesDamage(takesDamage.type);
         }
 
         // finishing the level
         const completesLevel = collision.withCompletesLevel();
         if (completesLevel) {
             this.level.completeLevel();
+            soundsManager.playSfx(SFX.WIN);
         }
     };
+
+    takesDamage() {
+        return null;
+    }
 
     getYTranslate() {
         // stand on ground when not moving and don't jump when in water
