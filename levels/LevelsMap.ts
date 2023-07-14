@@ -3,6 +3,8 @@ import IceAndFireIntro from "./IceAndFireIntro";
 import IceIntro from "./IceIntro";
 import ConveyorsIntro from "./ConveyorsIntro";
 import TeleportIntro from "./TeleportIntro";
+import ButtonsIntro from "./ButtonsIntro";
+import LocksIntro from "./LocksIntro";
 
 const Levels = {
   DemoLevel1: FlourIntro,
@@ -10,6 +12,8 @@ const Levels = {
   IceIntro: IceIntro,
   ConveyorsIntro: ConveyorsIntro,
   TeleportIntro: TeleportIntro,
+  ButtonsIntro: ButtonsIntro,
+  LocksIntro: LocksIntro
 };
 
 export default Levels;

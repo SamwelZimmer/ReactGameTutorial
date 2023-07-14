@@ -36,8 +36,6 @@ export default function Home() {
     return null;
   };
 
-  console.log(isTouchDevice);
-
   return (
     <main className="relative w-screen h-screen overflow-hidden m-0">
       <RenderLevel />
